@@ -5,17 +5,23 @@
     android:layout_height="match_parent"
     tools:context=".ActivityMain">
 
+    <ImageView
+        android:id="@+id/imageViewbg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <include
         android:id="@+id/toolbar"
         layout="@layout/layout_toolbar" />
 
-    <ImageView
-        android:id="@+id/imageViewbg"
+    <com.example.bucketdrop.BucketRecycleView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar" />
+        android:id="@+id/recycleView"
+        android:layout_below="@id/toolbar"/>
 
 
-    <include layout="@layout/empty_drop" />
+    <include android:id="@+id/emptyView"
+        layout="@layout/empty_drop" />
 
 </RelativeLayout>
