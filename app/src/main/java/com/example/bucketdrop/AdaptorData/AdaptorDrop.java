@@ -16,7 +16,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import io.realm.RealmResults;
 
+
 public class AdaptorDrop extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private Addlisterner mAddlisterner;
 
     public static final int NORMAL_ITEM =0;
     public static final int FOOTER_ITEM=1;
@@ -27,8 +30,9 @@ public class AdaptorDrop extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private RealmResults<Drop> mDrops;
 
 
-    public AdaptorDrop(Context context, RealmResults<Drop> drops) {
+    public AdaptorDrop(Context context, RealmResults<Drop> drops, Addlisterner addlisterner) {
         mLayoutInflater = LayoutInflater.from(context);
+        mAddlisterner = addlisterner;
         update(drops);
 
     }
@@ -42,7 +46,7 @@ public class AdaptorDrop extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
         else {
             View view = mLayoutInflater.inflate(R.layout.footer_layout_item,parent,false);
-            return new FooterHolder(view);
+            return new FooterHolder(view, mAddlisterner);
         }
 
     }
