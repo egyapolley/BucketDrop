@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/str_add_a_drop"
+        android:layout_marginTop="36dp"
+        android:layout_marginBottom="36dp"
+        android:textSize="18sp"/>
+
+    <ImageButton
+        android:background="@null"
+        android:id="@+id/imageButton"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@id/tv_title"
+        android:layout_alignBottom="@id/tv_title"
+        app:srcCompat="@drawable/ic_close" />
+
+    <EditText
+        android:layout_below="@id/tv_title"
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:hint="@string/str_editText"
+        android:padding="16dp"/>
+    <DatePicker
+        android:id="@+id/date_pick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editText"/>
+
+    <Button
+        android:id="@+id/add_it_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_it_button"
+        android:layout_below="@id/date_pick"
+        android:textAllCaps="false"/>
+
+
+</RelativeLayout>

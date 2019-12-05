@@ -14,7 +14,8 @@
         android:layout_height="192dp"
         android:layout_centerHorizontal="true"
         android:src="@drawable/logo"
-        android:layout_margin="88dp"/>
+        android:layout_margin="88dp"
+        android:contentDescription="@string/testing" />
 
     <Button
         android:background="@drawable/btn_pressed_bg"

@@ -2,7 +2,10 @@ package com.example.bucketdrop;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
@@ -30,6 +33,24 @@ public class ActivityMain extends AppCompatActivity  {
         }
     };
 
+    private ItemClickListerner itemClickListerner = new ItemClickListerner() {
+        @Override
+        public void markComplete(int position) {
+            showMarkDialog(position);
+        }
+    };
+
+    private void showMarkDialog(int position) {
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("POSITION", position);
+
+        DiaglogMark diaglogMark = new DiaglogMark();
+        diaglogMark.setArguments(bundle);
+        diaglogMark.show(getSupportFragmentManager(), "MARK");
+
+
+    }
 
 
     View emptyView;
@@ -78,7 +99,8 @@ public class ActivityMain extends AppCompatActivity  {
         mRecyclerView = findViewById(R.id.recycleView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mRecyclerView.addItemDecoration(new Divider(this,LinearLayoutManager.VERTICAL));
+       mRecyclerView.addItemDecoration(new Divider(this,LinearLayoutManager.VERTICAL));
+
 
 
         mRecyclerView.hideifEmpty(toolbar);
@@ -89,8 +111,14 @@ public class ActivityMain extends AppCompatActivity  {
 
 
 
-        mAdaptorDrop = new AdaptorDrop(this,realmResult,mAddlisterner);
+        mAdaptorDrop = new AdaptorDrop(this,realmInstance,realmResult,mAddlisterner,itemClickListerner);
         mRecyclerView.setAdapter(mAdaptorDrop);
+
+        SimpleCallbackhelper simpleCallbackhelper = new SimpleCallbackhelper(mAdaptorDrop);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallbackhelper);
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
+
+
 
     }
 
@@ -98,6 +126,8 @@ public class ActivityMain extends AppCompatActivity  {
         AddDropFragmentDialog dropFragmentDialog = new AddDropFragmentDialog();
         dropFragmentDialog.show(getSupportFragmentManager(),"ADD");
     }
+
+
 
     private void initbackgoundImage(){
         ImageView imageView = findViewById(R.id.imageViewbg);

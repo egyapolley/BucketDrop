@@ -4,4 +4,6 @@
     <string name="tv_add_a_drop">Add a drop</string>
     <string name="str_editText">What is it ?</string>
     <string name="add_it_button">Add it</string>
+    <string name="testing">testing</string>
+    <string name="mark_completed">Mark Completed</string>
 </resources>
