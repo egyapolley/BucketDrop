@@ -9,18 +9,27 @@ import androidx.recyclerview.widget.RecyclerView;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.bucketdrop.AdaptorData.AdaptorDrop;
 import com.example.bucketdrop.AdaptorData.Addlisterner;
+import com.example.bucketdrop.AdaptorData.Filter;
+import com.example.bucketdrop.AdaptorData.MarkCompletedListerner;
 import com.example.bucketdrop.beans.Drop;
 
 public class ActivityMain extends AppCompatActivity  {
+
+    public static final String FILTER = "filter";
 
     public static final String TAG ="MainActivity";
 
@@ -40,6 +49,14 @@ public class ActivityMain extends AppCompatActivity  {
         }
     };
 
+    private MarkCompletedListerner mMarkCompletedListerner = new MarkCompletedListerner() {
+        @Override
+        public void markCompleted(int position) {
+           mAdaptorDrop.markCompleted(position);
+        }
+    };
+    private Realm mRealmInstance;
+
     private void showMarkDialog(int position) {
 
         Bundle bundle = new Bundle();
@@ -47,6 +64,7 @@ public class ActivityMain extends AppCompatActivity  {
 
         DiaglogMark diaglogMark = new DiaglogMark();
         diaglogMark.setArguments(bundle);
+        diaglogMark.setMarkCompletedListener(mMarkCompletedListerner);
         diaglogMark.show(getSupportFragmentManager(), "MARK");
 
 
@@ -102,16 +120,20 @@ public class ActivityMain extends AppCompatActivity  {
        mRecyclerView.addItemDecoration(new Divider(this,LinearLayoutManager.VERTICAL));
 
 
+        mRealmInstance = Realm.getDefaultInstance();
 
         mRecyclerView.hideifEmpty(toolbar);
         mRecyclerView.showifEmty(emptyView);
 
-        Realm realmInstance = Realm.getDefaultInstance();
-        realmResult = realmInstance.where(Drop.class).findAllAsync();
+        int filter = loadData();
+        realmResult = getResult(filter);
+
+/*
+        realmResult = mRealmInstance.where(Drop.class).findAllAsync();*/
 
 
 
-        mAdaptorDrop = new AdaptorDrop(this,realmInstance,realmResult,mAddlisterner,itemClickListerner);
+        mAdaptorDrop = new AdaptorDrop(this, mRealmInstance,realmResult,mAddlisterner,itemClickListerner);
         mRecyclerView.setAdapter(mAdaptorDrop);
 
         SimpleCallbackhelper simpleCallbackhelper = new SimpleCallbackhelper(mAdaptorDrop);
@@ -120,6 +142,29 @@ public class ActivityMain extends AppCompatActivity  {
 
 
 
+    }
+
+    private RealmResults<Drop> getResult(int filter) {
+        RealmResults<Drop> realmResults;
+        switch (filter){
+            case Filter.NEAR:
+                realmResults =mRealmInstance.where(Drop.class).sort("when").findAllAsync();
+                break;
+            case Filter.FAR:
+                realmResults =mRealmInstance.where(Drop.class).sort("when",Sort.DESCENDING).findAllAsync();
+                break;
+            case Filter.COMPLETED:
+                realmResults =mRealmInstance.where(Drop.class).equalTo("completed",Boolean.TRUE).findAllAsync();
+                break;
+
+            case Filter.NOT_COMPLETED:
+                realmResults =mRealmInstance.where(Drop.class).equalTo("when",Boolean.FALSE).findAllAsync();
+                break;
+                default:
+                    realmResults =mRealmInstance.where(Drop.class).findAllAsync();
+
+        }
+        return realmResults;
     }
 
     private void showAddropDialog() {
@@ -150,4 +195,64 @@ public class ActivityMain extends AppCompatActivity  {
         super.onStop();
         realmResult.removeChangeListener(mDropRealmChangeListener);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_actions,menu);
+        return true;
+    }
+
+    public void saveData(int filter){
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putInt(FILTER, filter);
+        edit.apply();
+
+
+    }
+
+    public int loadData(){
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+       return preferences.getInt(FILTER,Filter.NONE);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int itemId = item.getItemId();
+        switch (itemId){
+            case R.id.add_item:
+                showAddropDialog();
+                return true;
+            case R.id.near_items:
+
+                realmResult = mRealmInstance.where(Drop.class).sort("when").findAllAsync();
+                realmResult.addChangeListener(mDropRealmChangeListener);
+                saveData(Filter.NEAR);
+                return true;
+            case R.id.far_away_activities:
+                mRealmInstance = Realm.getDefaultInstance();
+                realmResult = mRealmInstance.where(Drop.class).sort("when", Sort.DESCENDING).findAllAsync();
+                realmResult.addChangeListener(mDropRealmChangeListener);
+                saveData(Filter.FAR);
+                return true;
+            case R.id.item_completed:
+                mRealmInstance = Realm.getDefaultInstance();
+                realmResult = mRealmInstance.where(Drop.class).equalTo("completed",Boolean.TRUE).findAllAsync();
+                realmResult.addChangeListener(mDropRealmChangeListener);
+                saveData(Filter.COMPLETED);
+                return true;
+
+            case R.id.not_completed:
+                mRealmInstance = Realm.getDefaultInstance();
+                realmResult = mRealmInstance.where(Drop.class).equalTo("completed",Boolean.FALSE).findAllAsync();
+                realmResult.addChangeListener(mDropRealmChangeListener);
+                saveData(Filter.NOT_COMPLETED);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
 }

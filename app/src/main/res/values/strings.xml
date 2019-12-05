@@ -6,4 +6,9 @@
     <string name="add_it_button">Add it</string>
     <string name="testing">testing</string>
     <string name="mark_completed">Mark Completed</string>
+    <string name="add_item" />
+    <string name="near_activities">Near Activities</string>
+    <string name="far_away">Far away</string>
+    <string name="item_completed">Item Completed</string>
+    <string name="items_not_completed">Items not Completed</string>
 </resources>

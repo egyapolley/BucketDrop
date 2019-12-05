@@ -35,7 +35,8 @@
         android:id="@+id/date_picker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editText"/>
+        android:layout_below="@id/editText"
+        android:datePickerMode="spinner" />
 
     <Button
         android:layout_width="match_parent"

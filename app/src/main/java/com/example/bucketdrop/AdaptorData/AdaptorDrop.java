@@ -45,6 +45,19 @@ public class AdaptorDrop extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
     }
 
+    public void markCompleted(int position) {
+        if (position < mDrops.size()) {
+
+            realmInstance.beginTransaction();
+            mDrops.get(position).setCompleted(true);
+            realmInstance.commitTransaction();
+            notifyDataSetChanged();
+
+        }
+
+
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

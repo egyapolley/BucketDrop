@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/add_item"
+        android:icon="@drawable/ic_action_add"
+        android:title="@string/add_item"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/near_items"
+        android:title="@string/near_activities" />
+    <item
+        android:id="@+id/far_away_activities"
+        android:title="@string/far_away" />
+    <item
+        android:id="@+id/item_completed"
+        android:title="@string/item_completed" />
+    <item
+        android:id="@+id/not_completed"
+        android:title="@string/items_not_completed" />
+</menu>
